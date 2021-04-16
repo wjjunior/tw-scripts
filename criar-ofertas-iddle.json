@@ -10,8 +10,8 @@
   "params": {
     "aldeia": "",
     "grupo": "0",
-    "viagem": 3,
-    "mercadores": 0
+    "viagem": "3",
+    "mercadores": "0"
   },
   "nextStepId": 2,
   "steps": [
