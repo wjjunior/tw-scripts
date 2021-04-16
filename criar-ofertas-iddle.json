@@ -1,0 +1,24 @@
+{
+  "id": 12,
+  "active": false,
+  "name": "Criar Ofertas",
+  "timeGap": 15,
+  "lastSchedule": "2021-03-14T03:19:39.601Z",
+  "useGroups": false,
+  "group": "",
+  "importUrl": "",
+  "params": {
+    "aldeia": "",
+    "grupo": "0",
+    "viagem": 3,
+    "mercadores": 0
+  },
+  "nextStepId": 2,
+  "steps": [
+    {
+      "id": 1,
+      "gotoUrl": "village={aldeia}&screen=market&mode=mass_create_offers&group={grupo}&",
+      "script": "const reserveMerchants = {mercadores};\r\nconst maxDistance = {viagem};\r\n\r\nconst resources = {\r\n  wood: 0,\r\n  stone: 0,\r\n  iron: 0,\r\n};\r\n\r\nwindow.addEventListener(\r\n  \"load\",\r\n  function () {\r\n    const table = document.getElementById(\"offer_creation_villages\");\r\n    for (let i = 1; i < table.rows.length; i++) {\r\n      const merchants =\r\n        parseInt(table.rows[i].cells[3].innerText.split(\"/\")[0]) -\r\n        reserveMerchants;\r\n\r\n      if (merchants > 0) {\r\n        const resourcesContainer = table.rows[\r\n          i\r\n        ].cells[1].getElementsByClassName(\"nowrap\");\r\n\r\n        const woodContainer = resourcesContainer[0].getElementsByTagName(\r\n          \"span\"\r\n        );\r\n        let wood = \"\";\r\n        for (let y = 0; y < woodContainer.length; y++) {\r\n          wood = wood + woodContainer[y].innerText.replace(/\\D+/g, \"\");\r\n        }\r\n        resources.wood = parseInt(wood);\r\n\r\n        const stoneContainer = resourcesContainer[1].getElementsByTagName(\r\n          \"span\"\r\n        );\r\n        let stone = \"\";\r\n        for (let y = 0; y < stoneContainer.length; y++) {\r\n          stone = stone + stoneContainer[y].innerText.replace(/\\D+/g, \"\");\r\n        }\r\n        resources.stone = parseInt(stone);\r\n\r\n        const ironContainer = resourcesContainer[2].getElementsByTagName(\r\n          \"span\"\r\n        );\r\n        let iron = \"\";\r\n        for (let y = 0; y < ironContainer.length; y++) {\r\n          iron = iron + ironContainer[y].innerText.replace(/\\D+/g, \"\");\r\n        }\r\n        resources.iron = parseInt(iron);\r\n\r\n        const totalResources = Object.values(resources).reduce((a, b) => a + b);\r\n        const average = Math.round(totalResources / 3);\r\n\r\n        const arr = Object.values(resources);\r\n        const min = Math.min(...arr);\r\n        const max = Math.max(...arr);\r\n        const excess = Math.floor((max - average) / 1000);\r\n        const lack = Math.floor((average - min) / 1000);\r\n        let offers = lack;\r\n\r\n        if (excess < lack) {\r\n          offers = excess;\r\n        }\r\n\r\n        if (offers > merchants) {\r\n          offers = merchants;\r\n        }\r\n\r\n        const qtyInputs = table.rows[i].cells[4].getElementsByTagName(\"input\");\r\n        qtyInputs[0].value = 1000;\r\n        qtyInputs[1].value = 1000;\r\n\r\n        const qtySelects = table.rows[i].cells[4].getElementsByTagName(\r\n          \"select\"\r\n        );\r\n        qtySelects[0].value = Object.keys(resources).find(\r\n          (key) => resources[key] === max\r\n        );\r\n        qtySelects[1].value = Object.keys(resources).find(\r\n          (key) => resources[key] === min\r\n        );\r\n\r\n        const offerInput = table.rows[i].cells[5].getElementsByTagName(\"input\");\r\n        offerInput[0].value = offers;\r\n\r\n        const distanceInput = table.rows[i].cells[6].getElementsByTagName(\r\n          \"input\"\r\n        );\r\n        distanceInput[0].value = maxDistance;\r\n      }\r\n    }\r\n\r\n    const submitBtn = document.getElementsByClassName(\"btn_offer_create\")[1];\r\n\r\n    new Promise((resolve) => {\r\n      setTimeout(function () {\r\n        submitBtn.click();\r\n        resolve();\r\n      }, 15000);\r\n    });\r\n  },\r\n  false\r\n);"
+    }
+  ]
+}
